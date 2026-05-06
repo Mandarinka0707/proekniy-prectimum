@@ -100,7 +100,7 @@ def log_mood(
     current_user: models.User = Depends(get_current_user)
 ):
     """
-    Сохранение оценки настроения в дневник.
+    С
     """
     # Принудительно привязываем оценку к текущему авторизованному пользователю
     data.user_id = current_user.id
