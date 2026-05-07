@@ -42,7 +42,7 @@
         <div class="login-content">
           <h2>Авторизация</h2>
           <p>Для входа необходимо ввести Email и пароль</p>
-          <form class="login-form" action="main.html" method="get">
+          <form class="login-form" action="main.html" method="get" id="loginForm">
             <label class="sr-only" for="login-email">Email</label>
             <input id="login-email" type="email" placeholder="Email">
 
@@ -56,5 +56,31 @@
       </div>
     </section>
   </main>
+  <script>
+    const loginForm = document.querySelector('#loginForm');
+    const loginEmailInput = document.querySelector('#login-email');
+
+    const incrementSessionCounter = () => {
+      const currentValue = Number.parseInt(localStorage.getItem('heartmind:totalSessions') || '0', 10);
+      const safeValue = Number.isNaN(currentValue) ? 0 : currentValue;
+      localStorage.setItem('heartmind:totalSessions', String(safeValue + 1));
+    };
+
+    loginForm.addEventListener('submit', () => {
+      const trimmedEmail = loginEmailInput.value.trim();
+      const nowIso = new Date().toISOString();
+
+      if (trimmedEmail) {
+        localStorage.setItem('heartmind:userEmail', trimmedEmail);
+      }
+
+      if (!localStorage.getItem('heartmind:profileCreatedAt')) {
+        localStorage.setItem('heartmind:profileCreatedAt', nowIso);
+      }
+
+      localStorage.setItem('heartmind:lastActivityAt', nowIso);
+      incrementSessionCounter();
+    });
+  </script>
 </body>
 </html>

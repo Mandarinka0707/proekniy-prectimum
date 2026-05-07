@@ -32,7 +32,7 @@
 
       <div class="register-content">
         <h2>Регистрация</h2>
-        <form class="register-form" action="main.html" method="get">
+        <form class="register-form" action="main.html" method="get" id="registerForm">
           <label class="sr-only" for="name">Имя</label>
           <input id="name" type="text" placeholder="Имя">
 
@@ -47,10 +47,10 @@
 
           <fieldset class="role-group">
             <legend>Предпочитаемая роль AI (необязательно):</legend>
-            <label><input type="radio" name="role"> Медиатор - нейтральный взгляд, поиск компромисса</label>
-            <label><input type="radio" name="role"> КПТ-дневник - работа с мыслями и убеждениями</label>
-            <label><input type="radio" name="role"> Тренер ННО - ненасильственное общение</label>
-            <label><input type="radio" name="role"> Не выбрано (сможете выбрать позже)</label>
+            <label><input type="radio" name="role" value="МЕДИАТОР"> Медиатор - нейтральный взгляд, поиск компромисса</label>
+            <label><input type="radio" name="role" value="КПТ-ДНЕВНИК"> КПТ-дневник - работа с мыслями и убеждениями</label>
+            <label><input type="radio" name="role" value="ТРЕНЕР ННО"> Тренер ННО - ненасильственное общение</label>
+            <label><input type="radio" name="role" value="Не выбрана"> Не выбрано (сможете выбрать позже)</label>
           </fieldset>
 
           <label class="terms-check">
@@ -64,5 +64,51 @@
       </div>
     </section>
   </main>
+  <script>
+    const registerForm = document.querySelector('#registerForm');
+    const nameInput = document.querySelector('#name');
+    const emailInput = document.querySelector('#email');
+    const roleInputs = document.querySelectorAll('input[name="role"]');
+    const ROLE_STORAGE_KEY = 'heartmind:selectedRole';
+
+    const getSelectedRole = () => {
+      for (const roleInput of roleInputs) {
+        if (roleInput.checked) {
+          return roleInput.value;
+        }
+      }
+      return '';
+    };
+
+    const incrementSessionCounter = () => {
+      const currentValue = Number.parseInt(localStorage.getItem('heartmind:totalSessions') || '0', 10);
+      const safeValue = Number.isNaN(currentValue) ? 0 : currentValue;
+      localStorage.setItem('heartmind:totalSessions', String(safeValue + 1));
+    };
+
+    registerForm.addEventListener('submit', () => {
+      const trimmedName = nameInput.value.trim();
+      const trimmedEmail = emailInput.value.trim();
+      const selectedRole = getSelectedRole();
+      const nowIso = new Date().toISOString();
+
+      if (trimmedName) {
+        localStorage.setItem('heartmind:userName', trimmedName);
+      }
+      if (trimmedEmail) {
+        localStorage.setItem('heartmind:userEmail', trimmedEmail);
+      }
+      if (selectedRole) {
+        localStorage.setItem(ROLE_STORAGE_KEY, selectedRole);
+      }
+
+      if (!localStorage.getItem('heartmind:profileCreatedAt')) {
+        localStorage.setItem('heartmind:profileCreatedAt', nowIso);
+      }
+
+      localStorage.setItem('heartmind:lastActivityAt', nowIso);
+      incrementSessionCounter();
+    });
+  </script>
 </body>
 </html>
