@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartMind - Авторизация</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="login-page">
+    <section class="login-card">
+      <button class="close-btn login-close" type="button" aria-label="Закрыть">×</button>
+
+      <div class="login-left">
+        <div class="bg-letters" aria-hidden="true">
+          <span class="bg-h h1">H</span>
+          <span class="bg-h h2">H</span>
+          <span class="bg-h h3">H</span>
+          <span class="bg-h h4">H</span>
+          <span class="bg-h h5">H</span>
+          <span class="bg-h h6">H</span>
+          <span class="bg-h h7">H</span>
+          <span class="bg-h h8">H</span>
+        </div>
+
+        <div class="brand login-brand">
+          <h1 class="brand-title">HeartMind</h1>
+          <p class="brand-subtitle">AI-ассистент для помощи в отношениях</p>
+        </div>
+
+        <div class="promo-content">
+          <h2>Регистрация</h2>
+          <p>Для создания аккаунта необходимо пройти процедуру регистрации</p>
+          <a class="outline-btn promo-btn" href="register.html">Зарегистрироваться</a>
+        </div>
+      </div>
+
+      <div class="login-right">
+        <div class="login-content">
+          <h2>Авторизация</h2>
+          <p>Для входа необходимо ввести Email и пароль</p>
+          <form class="login-form" action="main.html" method="get">
+            <label class="sr-only" for="login-email">Email</label>
+            <input id="login-email" type="email" placeholder="Email">
+
+            <label class="sr-only" for="login-password">Пароль</label>
+            <input id="login-password" type="password" placeholder="Пароль">
+
+            <a class="forgot-link" href="#">Забыли пароль?</a>
+            <button class="submit-btn" type="submit">Войти</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
