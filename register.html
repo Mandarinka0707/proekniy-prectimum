@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartMind - Регистрация</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="api.js"></script>
+</head>
+<body>
+  <main class="register-page">
+    <section class="register-card">
+      <button class="close-btn" type="button" aria-label="Закрыть">×</button>
+
+<<<<<<< HEAD
+      
+=======
+>>>>>>> 134c47470fddace47a538c4202de3ca1e95b5f1d
+      <div class="bg-letters" aria-hidden="true">
+        <span class="bg-h h1">H</span>
+        <span class="bg-h h2">H</span>
+        <span class="bg-h h3">H</span>
+        <span class="bg-h h4">H</span>
+        <span class="bg-h h5">H</span>
+        <span class="bg-h h6">H</span>
+        <span class="bg-h h7">H</span>
+        <span class="bg-h h8">H</span>
+      </div>
+
+      <div class="brand">
+        <h1 class="brand-title">HeartMind</h1>
+        <p class="brand-subtitle">AI-ассистент для помощи в отношениях</p>
+      </div>
+
+      <div class="register-content">
+        <h2>Регистрация</h2>
+        <form class="register-form" action="main.html" method="get" id="registerForm">
+          <label class="sr-only" for="name">Имя</label>
+          <input id="name" type="text" placeholder="Имя">
+
+          <label class="sr-only" for="email">Email</label>
+          <input id="email" type="email" placeholder="Email">
+
+          <label class="sr-only" for="password">Пароль</label>
+          <input id="password" type="password" placeholder="Пароль">
+
+          <label class="sr-only" for="confirm-password">Подтвердить пароль</label>
+          <input id="confirm-password" type="password" placeholder="Подтвердить пароль">
+
+          <fieldset class="role-group">
+            <legend>Предпочитаемая роль AI (необязательно):</legend>
+            <label><input type="radio" name="role" value="МЕДИАТОР"> Медиатор - нейтральный взгляд, поиск компромисса</label>
+            <label><input type="radio" name="role" value="КПТ-ДНЕВНИК"> КПТ-дневник - работа с мыслями и убеждениями</label>
+            <label><input type="radio" name="role" value="ТРЕНЕР ННО"> Тренер ННО - ненасильственное общение</label>
+            <label><input type="radio" name="role" value="Не выбрана"> Не выбрано (сможете выбрать позже)</label>
+          </fieldset>
+
+          <label class="terms-check">
+            <input type="checkbox" checked>
+            Я принимаю условия обработки данных (ФЗ-152/GDPR)
+          </label>
+
+          <button class="outline-btn" type="submit">Зарегистрироваться</button>
+          <a class="page-link" href="login.html">Уже есть аккаунт? Войти</a>
+        </form>
+      </div>
+    </section>
+  </main>
+  <script>
+    const registerForm = document.querySelector('#registerForm');
+    const nameInput = document.querySelector('#name');
+    const emailInput = document.querySelector('#email');
+    const passwordInput = document.querySelector('#password');
+    const confirmPasswordInput = document.querySelector('#confirm-password');
+    const roleInputs = document.querySelectorAll('input[name="role"]');
+    const ROLE_STORAGE_KEY = 'heartmind:selectedRole';
+
+    const getSelectedRole = () => {
+        for (const roleInput of roleInputs) {
+            if (roleInput.checked) {
+                return roleInput.value;
+            }
+        }
+        return 'Не выбрана';
+    };
+
+    const incrementSessionCounter = () => {
+        const currentValue = Number.parseInt(localStorage.getItem('heartmind:totalSessions') || '0', 10);
+        const safeValue = Number.isNaN(currentValue) ? 0 : currentValue;
+        localStorage.setItem('heartmind:totalSessions', String(safeValue + 1));
+    };
+
+    registerForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        
+        const trimmedName = nameInput.value.trim();
+        const trimmedEmail = emailInput.value.trim();
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+        const selectedRole = getSelectedRole();
+        
+        if (password !== confirmPassword) {
+            alert('Пароли не совпадают');
+            return;
+        }
+        
+        if (password.length < 6) {
+            alert('Пароль должен быть не менее 6 символов');
+            return;
+        }
+        
+        if (!trimmedName || !trimmedEmail || !password) {
+            alert('Пожалуйста, заполните все обязательные поля');
+            return;
+        }
+        
+        try {
+            await api.register({
+                name: trimmedName,
+                email: trimmedEmail,
+                password: password,
+                preferred_role: selectedRole
+            });
+            
+            await api.login({ email: trimmedEmail, password: password });
+            
+            const nowIso = new Date().toISOString();
+            
+            if (trimmedName) {
+                localStorage.setItem('heartmind:userName', trimmedName);
+            }
+            if (trimmedEmail) {
+                localStorage.setItem('heartmind:userEmail', trimmedEmail);
+            }
+            if (selectedRole) {
+                localStorage.setItem(ROLE_STORAGE_KEY, selectedRole);
+            }
+
+            if (!localStorage.getItem('heartmind:profileCreatedAt')) {
+                localStorage.setItem('heartmind:profileCreatedAt', nowIso);
+            }
+
+            localStorage.setItem('heartmind:lastActivityAt', nowIso);
+            incrementSessionCounter();
+            
+            window.location.href = 'main.html';
+        } catch (error) {
+            alert(`Ошибка регистрации: ${error.message}`);
+        }
+    });
+  </script>
+</body>
+</html>
