@@ -1234,6 +1234,7 @@ body.modal-open {
     padding-right: 40px;
     font-size: clamp(28px, 6.2vw, 42px);
   }
+  
 
   .delete-account-intro,
   .delete-account-subtitle,
