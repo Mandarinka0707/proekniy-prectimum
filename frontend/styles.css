@@ -11,9 +11,15 @@
   box-sizing: border-box;
 }
 
+html,
 body {
   margin: 0;
-  min-height: 100vh;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  min-height: 100%;
   font-family: "Inter", sans-serif;
   background: var(--bg-gray);
   color: var(--text-main);
@@ -85,6 +91,19 @@ body {
   top: 30px;
   left: 34px;
   z-index: 2;
+}
+
+.register-card > .brand {
+  position: static;
+  inset: unset;
+  top: auto;
+  left: auto;
+  right: auto;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 28px;
 }
 
 .brand-title {
@@ -286,18 +305,32 @@ body {
   position: relative;
   padding: 32px 26px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-.login-brand {
-  position: relative;
-  top: 0;
-  left: 0;
+.login-left > .brand.login-brand {
+  position: static;
+  inset: unset;
+  top: auto;
+  left: auto;
+  right: auto;
+  align-self: stretch;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 .promo-content {
   position: relative;
   z-index: 2;
-  margin-top: 210px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
 }
 
@@ -333,35 +366,37 @@ body {
 }
 
 .login-content h2 {
-  margin: 0 0 8px;
-  color: #6f6f73;
-  font-size: 68px;
+  margin: 0 0 18px;
+  color: #646b5c;
+  font-size: 45px;
   font-weight: 500;
 }
 
 .login-content > p {
-  margin: 0 auto 36px;
-  max-width: 520px;
-  color: #bfc1c8;
-  font-size: 42px;
-  line-height: 1.16;
+  margin: 0 auto 24px;
+  max-width: 460px;
+  color: #6c735b;
+  font-size: 20px;
+  line-height: 1.15;
 }
 
 .login-form {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  width: min(100%, 420px);
+  margin: 0 auto;
   text-align: left;
 }
 
 .login-form input {
   width: 100%;
-  height: 64px;
+  height: 50px;
   border: 0;
-  border-radius: 9px;
+  border-radius: 12px;
   background: #ebebef;
   padding: 0 24px;
-  font-size: 33px;
+  font-size: 29px;
   color: #4d4d50;
 }
 
@@ -372,18 +407,18 @@ body {
 .forgot-link {
   margin-top: -2px;
   color: #b9bbc2;
-  font-size: 30px;
+  font-size: 29px;
   text-decoration: none;
 }
 
 .submit-btn {
   border: 0;
-  border-radius: 10px;
-  height: 68px;
+  border-radius: 12px;
+  height: 50px;
   background: var(--accent);
-  color: #3d4135;
-  font-size: 36px;
-  font-weight: 700;
+  color: #5f6653;
+  font-size: 29px;
+  font-weight: 500;
   cursor: pointer;
 }
 
@@ -399,38 +434,77 @@ body {
   .outline-btn { min-width: 260px; font-size: 24px; height: 52px; }
   .login-card { grid-template-columns: 1fr; }
   .login-left { min-height: 360px; }
-  .promo-content { margin-top: 80px; }
+  .promo-content { margin-top: 0; }
   .promo-content h2 { font-size: 42px; }
   .promo-content p { font-size: 25px; max-width: 360px; }
   .promo-btn { min-width: 300px; }
-  .login-content h2 { font-size: 46px; }
-  .login-content > p { font-size: 24px; }
-  .login-form input,
+  .login-content h2 { font-size: 42px; }
+  .login-content > p { font-size: 25px; max-width: 360px; }
+  .login-form input {
+    height: 52px;
+    font-size: 24px;
+  }
+
   .forgot-link,
-  .submit-btn { font-size: 24px; }
+  .submit-btn {
+    font-size: 24px;
+  }
+
+  .submit-btn {
+    height: 52px;
+  }
 }
 
 .app-page {
-  min-height: 100vh;
+  height: 100%;
   padding: 0;
+  overflow: hidden;
 }
 
 .app-shell {
-  min-height: 100vh;
+  height: 100%;
   display: grid;
   grid-template-columns: 242px 1fr;
   background: #ececee;
+  overflow: hidden;
 }
 
 .app-sidebar {
   background: linear-gradient(180deg, var(--accent) 0%, #c9db65 100%);
-  padding: 20px 14px 10px;
+  padding: 20px 16px 10px;
   display: flex;
   flex-direction: column;
 }
 
-.app-brand {
+.app-sidebar > .brand.app-brand {
   position: static;
+  inset: unset;
+  top: auto;
+  left: auto;
+  right: auto;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.app-sidebar > .brand .brand-title {
+  font-size: clamp(26px, 6.8vw, 38px);
+  line-height: 1.05;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+}
+
+.app-sidebar > .brand .brand-subtitle {
+  font-size: 12px;
+  line-height: 1.3;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 6px 0 0;
 }
 
 .new-chat-btn {
@@ -484,26 +558,32 @@ body {
 
 .app-content {
   position: relative;
-  padding: 28px 30px 26px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  padding: 28px 0 26px 30px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  grid-template-rows: 1fr auto;
+  column-gap: 12px;
   overflow: hidden;
 }
 
 .top-menu {
-  margin-left: auto;
-  width: 360px;
+  position: static;
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  width: auto;
   display: flex;
   flex-direction: column;
   gap: 18px;
   align-items: flex-end;
-  margin-right: -56px;
+  justify-self: end;
+  align-self: start;
+  z-index: 5;
 }
 
 .top-menu button {
   border: 0;
-  border-radius: 999px;
+  border-radius: 27px 0 0 27px;
   height: 54px;
   background: var(--accent);
   color: #697147;
@@ -511,79 +591,76 @@ body {
   font-weight: 500;
   cursor: pointer;
   width: 240px;
-  padding: 0 18px;
+  padding: 0 20px 0 18px;
   white-space: nowrap;
   text-align: center;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
-}
-
-.top-menu button:nth-child(2) {
-  width: 320px;
-  align-self: flex-end;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease, width 0.2s ease;
 }
 
 .top-menu button.is-active {
   border: 2px solid #70775e;
   box-shadow: 0 0 0 2px rgba(112, 119, 94, 0.18);
-  transform: translateX(-2px);
+  width: 260px;
+  transform: translateX(-14px);
+}
+
+.chat-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: center;
 }
 
 .welcome-block {
   text-align: center;
-  margin-top: 40px;
+  margin-top: 0;
 }
 
 .avatar-mark {
-  font-size: 150px;
+  font-size: 72px;
   color: #6f7658;
   line-height: 1;
+  margin-bottom: 6px;
 }
 
 .welcome-block p {
-  margin: -18px 0 0;
-  font-size: 28px;
-  line-height: 1.05;
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.35;
   color: #697147;
 }
 
-.center-brand {
-  text-align: center;
-  position: relative;
-}
-
-.center-brand h2 {
-  margin: 0;
-  font-family: "Times New Roman", serif;
-  font-size: 58px;
-  font-weight: 500;
-  color: #62684d;
-}
-
-.center-brand p {
-  margin: 0;
-  font-size: 15px;
-  color: #7a8162;
+.chat-empty-state .role-selector {
+  margin-top: 18px;
 }
 
 .chat-main {
-  flex: 1;
+  grid-column: 1;
+  grid-row: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-height: 0;
+  min-width: 0;
+  padding: 8px 0 0;
 }
 
 .chat-thread {
   flex: 1;
   overflow-y: auto;
-  padding: 8px 10px 12px;
+  padding: 12px 24px 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  scroll-padding-bottom: 12px;
 }
 
 .chat-message {
-  max-width: min(72%, 640px);
+  max-width: min(72%, 520px);
   border-radius: 16px;
   padding: 10px 14px;
   font-size: 16px;
@@ -593,12 +670,14 @@ body {
 
 .chat-message-user {
   align-self: flex-end;
+  margin-right: 0;
   background: #d9e97e;
   color: #4e553c;
 }
 
 .chat-message-assistant {
   align-self: flex-start;
+  margin-left: 0;
   background: #f4f5f7;
   color: #5f664d;
   border: 1px solid rgba(112, 119, 94, 0.25);
@@ -611,14 +690,14 @@ body {
 }
 
 .role-toggle {
-  margin-top: 8px;
+  margin-top: 14px;
   border: 2px solid #a7b65f;
-  border-radius: 24px;
-  height: 46px;
-  padding: 0 18px;
+  border-radius: 22px;
+  height: 42px;
+  padding: 0 16px;
   background: #d7e676;
   color: #62684d;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 500;
   cursor: pointer;
   display: inline-flex;
@@ -677,15 +756,18 @@ body {
 }
 
 .message-bar {
-  width: min(100%, 920px);
+  grid-column: 1;
+  grid-row: 2;
+  width: min(100%, 680px);
   margin: 10px auto 0;
+  justify-self: center;
   background: #dbe3a3;
-  border-radius: 24px;
-  min-height: 106px;
-  padding: 0 22px;
+  border-radius: 18px;
+  min-height: 56px;
+  padding: 0 16px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
 .message-bar input {
@@ -694,7 +776,7 @@ body {
   outline: none;
   background: transparent;
   color: #687046;
-  font-size: 40px;
+  font-size: 22px;
 }
 
 .message-bar input::placeholder {
@@ -705,7 +787,7 @@ body {
   border: 0;
   background: transparent;
   color: #5d653d;
-  font-size: 50px;
+  font-size: 28px;
   cursor: pointer;
 }
 
