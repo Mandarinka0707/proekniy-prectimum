@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartMind - Главная</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="api.js"></script>
+</head>
+<body>
+  <main class="app-page">
+    <section class="app-shell">
+      <aside class="app-sidebar">
+        <div class="brand app-brand">
+          <h1 class="brand-title">HeartMind</h1>
+          <p class="brand-subtitle">AI-ассистент для помощи в отношениях</p>
+        </div>
+
+        <button class="new-chat-btn" id="newChatBtn" type="button">↺ Новый чат</button>
+
+        <div class="history-block">
+          <p>Чаты</p>
+          <div class="history-list" id="chatHistoryList"></div>
+        </div>
+      </aside>
+
+      <section class="app-content">
+        <nav class="top-menu">
+          <button type="button" id="profileOpenBtn" data-tab="profile">Мой профиль</button>
+          <button type="button" data-tab="mood" id="moodOpenBtn">Мое настроение</button>
+          <button type="button" data-tab="stats" id="statsOpenBtn">Статистика</button>
+        </nav>
+
+        <div class="chat-main">
+          <div class="chat-thread" id="chatThread"></div>
+
+          <div class="chat-empty-state" id="chatEmptyState">
+            <div class="welcome-block">
+              <div class="avatar-mark">⬡</div>
+              <p>С возвращением, <span id="welcomeUserName">Имя</span>!<br>Готовы разобраться в том, что вас волнует?</p>
+            </div>
+
+            <div class="role-selector">
+              <button class="role-toggle" type="button" aria-expanded="false" aria-controls="roleMenu">
+                Выберите роль AI <span>➤</span>
+              </button>
+              <div class="role-menu" id="roleMenu" hidden>
+                <button type="button" data-role="МЕДИАТОР">МЕДИАТОР <span>➤</span><small>Нейтральный взгляд и поиск компромисса</small></button>
+                <button type="button" data-role="КПТ-ДНЕВНИК">КПТ-ДНЕВНИК <span>➤</span><small>Работа с мыслями и убеждениями</small></button>
+                <button type="button" data-role="ТРЕНЕР ННО">ТРЕНЕР ННО <span>➤</span><small>Я-сообщения и чувства без осуждения</small></button>
+                <button type="button" data-role="Не выбрана">НЕ ВЫБРАНА <span>➤</span><small>Вы сможете выбрать роль позже</small></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form class="message-bar" id="messageForm">
+          <input type="text" id="messageInput" placeholder="Сообщение">
+          <button type="submit">➤</button>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <!-- Модальное окно профиля -->
+  <div class="profile-modal" id="profileModal" hidden>
+    <div class="profile-modal-backdrop" data-close-profile="true"></div>
+    <section class="profile-modal-card" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+      <div class="profile-modal-left">
+        <div class="profile-brand">
+          <h2>HeartMind</h2>
+          <p>AI-ассистент для помощи в отношениях</p>
+        </div>
+        <dl class="profile-details">
+          <div>
+            <dt>Имя:</dt>
+            <dd id="profileNameValue">Ульяна</dd>
+          </div>
+          <div>
+            <dt>Email:</dt>
+            <dd id="profileEmailValue"></dd>
+          </div>
+          <div>
+            <dt>Предпочитаемая роль AI:</dt>
+            <dd id="profileRoleValue">Не выбрана</dd>
+          </div>
+        </dl>
+        <div class="profile-logo-letter" aria-hidden="true">H</div>
+      </div>
+      <div class="profile-modal-right">
+        <button class="profile-close-btn" id="profileCloseBtn" type="button" aria-label="Закрыть профиль">×</button>
+        <h3 id="profileModalTitle">Мой профиль</h3>
+        <div class="profile-stats">
+          <p>Всего сессий: <span id="profileSessionsValue">0</span></p>
+          <p>Всего сообщений: <span id="profileMessagesValue">0</span></p>
+          <p>Последняя активность: <span id="profileLastActivityValue">-</span></p>
+          <p>Аккаунт создан: <span id="profileCreatedAtValue">-</span></p>
+        </div>
+        <button class="logout-btn" id="logoutBtn">Выйти из аккаунта</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Модальное окно настроения -->
+  <div class="mood-modal" id="moodModal" hidden>
+    <div class="mood-modal-backdrop" data-close-mood-modal="true"></div>
+    <section class="mood-modal-card" role="dialog" aria-modal="true" aria-labelledby="moodModalTitle">
+      <button class="mood-modal-close-btn" id="moodModalCloseBtn" type="button" aria-label="Закрыть окно настроения">×</button>
+      <h3 id="moodModalTitle">Мое настроение</h3>
+      <p class="mood-modal-subtitle">Выберите, как вы себя чувствуете сейчас:</p>
+      <div class="mood-grid">
+        <button type="button" class="mood-option-btn" data-mood="Радостно">😊 Радостно</button>
+        <button type="button" class="mood-option-btn" data-mood="Спокойно">😌 Спокойно</button>
+        <button type="button" class="mood-option-btn" data-mood="Тревожно">😟 Тревожно</button>
+        <button type="button" class="mood-option-btn" data-mood="Грустно">😔 Грустно</button>
+      </div>
+      <p class="mood-current">Текущее настроение: <span id="currentMoodValue">Не выбрано</span></p>
+    </section>
+  </div>
+
+  <!-- Модальное окно статистики -->
+  <div class="stats-modal" id="statsModal" hidden>
+    <div class="stats-modal-backdrop" data-close-stats-modal="true"></div>
+    <section class="stats-modal-card" role="dialog" aria-modal="true" aria-labelledby="statsModalTitle">
+      <button class="stats-modal-close-btn" id="statsModalCloseBtn" type="button" aria-label="Закрыть окно статистики">×</button>
+      <h3 id="statsModalTitle">Статистика</h3>
+      <div class="stats-grid">
+        <p>Всего сессий: <span id="statsSessionsValue">0</span></p>
+        <p>Всего сообщений: <span id="statsMessagesValue">0</span></p>
+        <p>Последнее настроение: <span id="statsMoodValue">Не выбрано</span></p>
+        <p>Текущая роль AI: <span id="statsRoleValue">Не выбрана</span></p>
+        <p>Аккаунт создан: <span id="statsCreatedAtValue">-</span></p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // ============================================
+    // КЛЮЧИ ДЛЯ ХРАНЕНИЯ
+    // ============================================
+    const ROLE_STORAGE_KEY = 'heartmind:selectedRole';
+    const ACTIVE_TAB_STORAGE_KEY = 'heartmind:activeTopTab';
+    const CHATS_STORAGE_KEY = 'heartmind:chatList';
+    const CHAT_MESSAGES_STORAGE_KEY = 'heartmind:chatMessages';
+    const ACTIVE_CHAT_STORAGE_KEY = 'heartmind:activeChatId';
+    const MOOD_STORAGE_KEY = 'heartmind:currentMood';
+    const TOTAL_MESSAGES_KEY = 'heartmind:totalMessages';
+    const TOTAL_SESSIONS_KEY = 'heartmind:totalSessions';
+    const LAST_ACTIVITY_KEY = 'heartmind:lastActivityAt';
+    const CREATED_AT_KEY = 'heartmind:profileCreatedAt';
+
+    // ============================================
+    // DOM ЭЛЕМЕНТЫ
+    // ============================================
+    const toggle = document.querySelector('.role-toggle');
+    const menu = document.querySelector('.role-menu');
+    const roleButtons = document.querySelectorAll('.role-menu button');
+    const toggleLabel = toggle.childNodes[0];
+    const newChatBtn = document.querySelector('#newChatBtn');
+    const chatHistoryList = document.querySelector('#chatHistoryList');
+    const messageForm = document.querySelector('#messageForm');
+    const messageInput = document.querySelector('#messageInput');
+    const chatThread = document.querySelector('#chatThread');
+    const chatEmptyState = document.querySelector('#chatEmptyState');
+    const profileOpenBtn = document.querySelector('#profileOpenBtn');
+    const profileCloseBtn = document.querySelector('#profileCloseBtn');
+    const profileModal = document.querySelector('#profileModal');
+    const topMenuButtons = document.querySelectorAll('.top-menu button');
+    const profileNameValue = document.querySelector('#profileNameValue');
+    const welcomeUserName = document.querySelector('#welcomeUserName');
+    const profileEmailValue = document.querySelector('#profileEmailValue');
+    const profileRoleValue = document.querySelector('#profileRoleValue');
+    const profileSessionsValue = document.querySelector('#profileSessionsValue');
+    const profileMessagesValue = document.querySelector('#profileMessagesValue');
+    const profileLastActivityValue = document.querySelector('#profileLastActivityValue');
+    const profileCreatedAtValue = document.querySelector('#profileCreatedAtValue');
+    const moodOpenBtn = document.querySelector('#moodOpenBtn');
+    const moodModal = document.querySelector('#moodModal');
+    const moodModalCloseBtn = document.querySelector('#moodModalCloseBtn');
+    const moodOptionButtons = document.querySelectorAll('.mood-option-btn');
+    const currentMoodValue = document.querySelector('#currentMoodValue');
+    const statsOpenBtn = document.querySelector('#statsOpenBtn');
+    const statsModal = document.querySelector('#statsModal');
+    const statsModalCloseBtn = document.querySelector('#statsModalCloseBtn');
+    const statsSessionsValue = document.querySelector('#statsSessionsValue');
+    const statsMessagesValue = document.querySelector('#statsMessagesValue');
+    const statsMoodValue = document.querySelector('#statsMoodValue');
+    const statsRoleValue = document.querySelector('#statsRoleValue');
+    const statsCreatedAtValue = document.querySelector('#statsCreatedAtValue');
+    const logoutBtn = document.querySelector('#logoutBtn');
+
+    let pendingMessage = false;
+
+    // ============================================
+    // РАБОТА С LOCALSTORAGE
+    // ============================================
+    const readChats = () => {
+      try {
+        const rawValue = localStorage.getItem(CHATS_STORAGE_KEY);
+        const parsedValue = rawValue ? JSON.parse(rawValue) : [];
+        return Array.isArray(parsedValue) ? parsedValue : [];
+      } catch (error) {
+        return [];
+      }
+    };
+
+    const writeChats = (chats) => {
+      localStorage.setItem(CHATS_STORAGE_KEY, JSON.stringify(chats));
+    };
+
+    const readChatMessagesMap = () => {
+      try {
+        const rawValue = localStorage.getItem(CHAT_MESSAGES_STORAGE_KEY);
+        const parsedValue = rawValue ? JSON.parse(rawValue) : {};
+        return parsedValue && typeof parsedValue === 'object' ? parsedValue : {};
+      } catch (error) {
+        return {};
+      }
+    };
+
+    const writeChatMessagesMap = (messagesMap) => {
+      localStorage.setItem(CHAT_MESSAGES_STORAGE_KEY, JSON.stringify(messagesMap));
+    };
+
+    const getActiveChatId = () => localStorage.getItem(ACTIVE_CHAT_STORAGE_KEY);
+
+    const setActiveChat = (chatId) => {
+      localStorage.setItem(ACTIVE_CHAT_STORAGE_KEY, chatId);
+      const historyButtons = chatHistoryList.querySelectorAll('.history-chat-item');
+      historyButtons.forEach((button) => {
+        button.classList.toggle('is-active', button.dataset.chatId === chatId);
+      });
+      renderCurrentChatMessages();
+    };
+
+    const formatDate = (value) => {
+      if (!value) return '-';
+      const parsedDate = new Date(value);
+      if (Number.isNaN(parsedDate.getTime())) return value;
+      return parsedDate.toLocaleDateString('ru-RU');
+    };
+
+    // ============================================
+    // ОТОБРАЖЕНИЕ СООБЩЕНИЙ
+    // ============================================
+    const renderCurrentChatMessages = () => {
+      const activeChatId = getActiveChatId();
+      const messagesMap = readChatMessagesMap();
+      const messages = activeChatId ? (messagesMap[activeChatId] || []) : [];
+
+      chatThread.innerHTML = '';
+
+      messages.forEach((message) => {
+        const messageElement = document.createElement('div');
+        const authorClass = message.author === 'user' ? 'chat-message-user' : 'chat-message-assistant';
+        messageElement.className = `chat-message ${authorClass}`;
+        messageElement.textContent = message.text;
+        chatThread.appendChild(messageElement);
+      });
+
+      const hasMessages = messages.length > 0;
+      chatEmptyState.hidden = hasMessages;
+      chatThread.hidden = !hasMessages;
+      if (hasMessages) {
+        chatThread.scrollTop = chatThread.scrollHeight;
+      }
+    };
+
+    const appendMessageToActiveChat = (author, text) => {
+      const activeChatId = getActiveChatId();
+      if (!activeChatId) return;
+
+      const messagesMap = readChatMessagesMap();
+      if (!Array.isArray(messagesMap[activeChatId])) {
+        messagesMap[activeChatId] = [];
+      }
+      messagesMap[activeChatId].push({ author, text });
+      writeChatMessagesMap(messagesMap);
+      renderCurrentChatMessages();
+    };
+
+    const renderChats = (chats) => {
+      chatHistoryList.innerHTML = '';
+      chats.forEach((chat) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'history-item history-chat-item';
+        button.dataset.chatId = chat.id;
+        button.textContent = chat.title;
+        button.addEventListener('click', () => {
+          setActiveChat(chat.id);
+          loadMessagesForChat(parseInt(chat.id));
+        });
+        chatHistoryList.appendChild(button);
+      });
+    };
+
+    // ============================================
+    // РАБОТА С РОЛЯМИ
+    // ============================================
+    const setRoleLabel = (roleName) => {
+      toggleLabel.textContent = `${roleName} `;
+    };
+
+    const setProfileRoleLabel = (roleName) => {
+      profileRoleValue.textContent = roleName;
+    };
+
+    const applySelectedRole = (roleName) => {
+      setRoleLabel(roleName);
+      setProfileRoleLabel(roleName);
+      localStorage.setItem(ROLE_STORAGE_KEY, roleName);
+    };
+
+    // ============================================
+    // РАБОТА С СЕРВЕРОМ
+    // ============================================
+    async function loadUserData() {
+      try {
+        const user = await api.getCurrentUser();
+        if (user) {
+          localStorage.setItem('heartmind:userName', user.name);
+          localStorage.setItem('heartmind:userEmail', user.email);
+          if (user.preferred_role) {
+            localStorage.setItem(ROLE_STORAGE_KEY, user.preferred_role);
+            applySelectedRole(user.preferred_role);
+          }
+          if (user.created_at) {
+            localStorage.setItem(CREATED_AT_KEY, user.created_at);
+          }
+          profileNameValue.textContent = user.name;
+          welcomeUserName.textContent = user.name;
+          profileEmailValue.textContent = user.email;
+          profileCreatedAtValue.textContent = formatDate(user.created_at);
+          statsCreatedAtValue.textContent = formatDate(user.created_at);
+        }
+      } catch (error) {
+        console.error('Failed to load user data:', error);
+      }
+    }
+
+    async function loadChatsFromServer() {
+      try {
+        const serverChats = await api.getUserChats();
+        
+        if (serverChats && serverChats.length > 0) {
+          const chats = serverChats.map(chat => ({
+            id: String(chat.id),
+            title: chat.title
+          }));
+          
+          writeChats(chats);
+          renderChats(chats);
+          
+          const savedActiveChatId = localStorage.getItem(ACTIVE_CHAT_STORAGE_KEY);
+          const chatExists = chats.some(chat => chat.id === savedActiveChatId);
+          
+          let activeChatId = savedActiveChatId;
+          if (!chatExists || !savedActiveChatId) {
+            activeChatId = chats[0]?.id;
+            if (activeChatId) {
+              setActiveChat(activeChatId);
+            }
+          }
+          
+          if (activeChatId) {
+            await loadMessagesForChat(parseInt(activeChatId));
+          }
+        } else {
+          await createNewChat();
+        }
+      } catch (error) {
+        console.error('Failed to load chats:', error);
+        const chats = readChats();
+        if (!chats.length) {
+          await createNewChat();
+        }
+      }
+    }
+
+    async function loadMessagesForChat(chatId) {
+      if (!chatId || isNaN(chatId)) return;
+      
+      try {
+        const messages = await api.getChatMessages(chatId);
+        if (messages && messages.length > 0) {
+          const messagesMap = readChatMessagesMap();
+          messagesMap[String(chatId)] = messages.map(msg => ({
+            author: msg.is_user ? 'user' : 'assistant',
+            text: msg.message
+          }));
+          writeChatMessagesMap(messagesMap);
+          renderCurrentChatMessages();
+        }
+      } catch (error) {
+        console.error('Failed to load messages:', error);
+      }
+    }
+
+    async function createNewChat() {
+      try {
+        const roleName = localStorage.getItem(ROLE_STORAGE_KEY) || 'Не выбрана';
+        const chats = readChats();
+        const chatNumber = chats.length + 1;
+        const newChatTitle = `Новый чат ${chatNumber}`;
+        
+        const serverChat = await api.createChat(newChatTitle, roleName);
+        
+        const newChat = {
+          id: String(serverChat.id),
+          title: serverChat.title
+        };
+        
+        const updatedChats = [newChat, ...chats];
+        writeChats(updatedChats);
+        
+        const messagesMap = readChatMessagesMap();
+        messagesMap[newChat.id] = [];
+        writeChatMessagesMap(messagesMap);
+        
+        renderChats(updatedChats);
+        setActiveChat(newChat.id);
+        
+        messageInput.value = '';
+        messageInput.focus();
+        
+        return newChat;
+      } catch (error) {
+        console.error('Failed to create chat:', error);
+        alert('Ошибка создания чата: ' + error.message);
+        return null;
+      }
+    }
+
+    async function updateLastActivity() {
+      const now = new Date().toISOString();
+      localStorage.setItem(LAST_ACTIVITY_KEY, now);
+      profileLastActivityValue.textContent = formatDate(now);
+    }
+
+    // ============================================
+    // ОБРАБОТЧИКИ СОБЫТИЙ
+    // ============================================
+    
+    // Роли
+    toggle.addEventListener('click', () => {
+      const opened = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!opened));
+      menu.hidden = opened;
+    });
+
+    roleButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const roleName = button.dataset.role;
+        applySelectedRole(roleName);
+        toggle.setAttribute('aria-expanded', 'false');
+        menu.hidden = true;
+      });
+    });
+
+    // Отправка сообщения
+    messageForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const hasMessage = messageInput.value.trim().length > 0;
+      if (!hasMessage || pendingMessage) return;
+
+      const userMessage = messageInput.value.trim();
+      const roleName = localStorage.getItem(ROLE_STORAGE_KEY) || 'Не выбрана';
+      let activeChatId = getActiveChatId();
+      
+      if (!activeChatId) {
+        const newChat = await createNewChat();
+        if (newChat) {
+          activeChatId = newChat.id;
+        } else {
+          return;
+        }
+      }
+      
+      appendMessageToActiveChat('user', userMessage);
+      
+      // Обновляем счетчик сообщений
+      const currentMessages = parseInt(localStorage.getItem(TOTAL_MESSAGES_KEY) || '0');
+      localStorage.setItem(TOTAL_MESSAGES_KEY, String(currentMessages + 1));
+      profileMessagesValue.textContent = localStorage.getItem(TOTAL_MESSAGES_KEY);
+      statsMessagesValue.textContent = localStorage.getItem(TOTAL_MESSAGES_KEY);
+      
+      pendingMessage = true;
+      messageInput.disabled = true;
+      
+      try {
+        const response = await api.sendMessageWithChat(parseInt(activeChatId), userMessage, roleName);
+        appendMessageToActiveChat('assistant', response.reply);
+        
+        // Обновляем счетчик сообщений для ответа
+        const updatedMessages = parseInt(localStorage.getItem(TOTAL_MESSAGES_KEY) || '0');
+        localStorage.setItem(TOTAL_MESSAGES_KEY, String(updatedMessages + 1));
+        profileMessagesValue.textContent = localStorage.getItem(TOTAL_MESSAGES_KEY);
+        statsMessagesValue.textContent = localStorage.getItem(TOTAL_MESSAGES_KEY);
+        
+      } catch (error) {
+        console.error('API Error:', error);
+        appendMessageToActiveChat('assistant', `⚠️ Ошибка: ${error.message}`);
+      } finally {
+        pendingMessage = false;
+        messageInput.disabled = false;
+        messageInput.focus();
+      }
+
+      await updateLastActivity();
+      messageInput.value = '';
+    });
+
+    // Профиль
+    const openProfileModal = () => {
+      const sessions = localStorage.getItem(TOTAL_SESSIONS_KEY) || '0';
+      const messages = localStorage.getItem(TOTAL_MESSAGES_KEY) || '0';
+      const lastActivity = localStorage.getItem(LAST_ACTIVITY_KEY);
+      const createdAt = localStorage.getItem(CREATED_AT_KEY);
+      
+      profileSessionsValue.textContent = sessions;
+      profileMessagesValue.textContent = messages;
+      profileLastActivityValue.textContent = formatDate(lastActivity);
+      profileCreatedAtValue.textContent = formatDate(createdAt);
+      
+      profileModal.hidden = false;
+      document.body.classList.add('modal-open');
+    };
+
+    const closeProfileModal = () => {
+      profileModal.hidden = true;
+      document.body.classList.remove('modal-open');
+    };
+
+    profileOpenBtn.addEventListener('click', openProfileModal);
+    profileCloseBtn.addEventListener('click', closeProfileModal);
+    
+    profileModal.addEventListener('click', (event) => {
+      if (event.target.closest('[data-close-profile="true"]')) {
+        closeProfileModal();
+      }
+    });
+
+    // Настроение
+    const openMoodModal = () => {
+      moodModal.hidden = false;
+      document.body.classList.add('modal-open');
+    };
+
+    const closeMoodModal = () => {
+      moodModal.hidden = true;
+      document.body.classList.remove('modal-open');
+    };
+
+    moodOpenBtn.addEventListener('click', openMoodModal);
+    moodModalCloseBtn.addEventListener('click', closeMoodModal);
+    
+    moodModal.addEventListener('click', (event) => {
+      if (event.target.closest('[data-close-mood-modal="true"]')) {
+        closeMoodModal();
+      }
+    });
+
+    moodOptionButtons.forEach((button) => {
+      button.addEventListener('click', async () => {
+        const selectedMood = button.dataset.mood;
+        try {
+          await api.logMood(selectedMood);
+          localStorage.setItem(MOOD_STORAGE_KEY, selectedMood);
+          currentMoodValue.textContent = selectedMood;
+          statsMoodValue.textContent = selectedMood;
+          closeMoodModal();
+        } catch (error) {
+          alert(`Ошибка сохранения настроения: ${error.message}`);
+        }
+      });
+    });
+
+    // Статистика
+    const openStatsModal = () => {
+      const sessions = localStorage.getItem(TOTAL_SESSIONS_KEY) || '0';
+      const messages = localStorage.getItem(TOTAL_MESSAGES_KEY) || '0';
+      const mood = localStorage.getItem(MOOD_STORAGE_KEY) || 'Не выбрано';
+      const role = localStorage.getItem(ROLE_STORAGE_KEY) || 'Не выбрана';
+      const createdAt = localStorage.getItem(CREATED_AT_KEY);
+      
+      statsSessionsValue.textContent = sessions;
+      statsMessagesValue.textContent = messages;
+      statsMoodValue.textContent = mood;
+      statsRoleValue.textContent = role;
+      statsCreatedAtValue.textContent = formatDate(createdAt);
+      
+      statsModal.hidden = false;
+      document.body.classList.add('modal-open');
+    };
+
+    const closeStatsModal = () => {
+      statsModal.hidden = true;
+      document.body.classList.remove('modal-open');
+    };
+
+    statsOpenBtn.addEventListener('click', openStatsModal);
+    statsModalCloseBtn.addEventListener('click', closeStatsModal);
+    
+    statsModal.addEventListener('click', (event) => {
+      if (event.target.closest('[data-close-stats-modal="true"]')) {
+        closeStatsModal();
+      }
+    });
+
+    // Новый чат
+    newChatBtn.addEventListener('click', () => {
+      createNewChat();
+    });
+
+    // Выход
+    const handleLogout = () => {
+      if (confirm('Вы уверены, что хотите выйти?')) {
+        api.logout();
+        const keysToRemove = [
+          'access_token', CHATS_STORAGE_KEY, CHAT_MESSAGES_STORAGE_KEY, 
+          ACTIVE_CHAT_STORAGE_KEY, TOTAL_MESSAGES_KEY, LAST_ACTIVITY_KEY
+        ];
+        keysToRemove.forEach(key => localStorage.removeItem(key));
+        window.location.href = 'login.html';
+      }
+    };
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', handleLogout);
+    }
+
+    // Табы
+    const setActiveTab = (tabName) => {
+      topMenuButtons.forEach((button) => {
+        const isActive = button.dataset.tab === tabName;
+        button.classList.toggle('is-active', isActive);
+      });
+      localStorage.setItem(ACTIVE_TAB_STORAGE_KEY, tabName);
+    };
+
+    topMenuButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        setActiveTab(button.dataset.tab);
+      });
+    });
+
+    // Закрытие модальных окон по Escape
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        if (!profileModal.hidden) closeProfileModal();
+        if (!moodModal.hidden) closeMoodModal();
+        if (!statsModal.hidden) closeStatsModal();
+      }
+    });
+
+    // Закрытие меню ролей при клике вне
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('.role-selector')) {
+        toggle.setAttribute('aria-expanded', 'false');
+        menu.hidden = true;
+      }
+    });
+
+    // ============================================
+    // ИНИЦИАЛИЗАЦИЯ
+    // ============================================
+    async function init() {
+      // Проверка авторизации
+      try {
+        await api.getCurrentUser();
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      // Загрузка данных
+      await loadUserData();
+      await loadChatsFromServer();
+      
+      // Настройка начальных значений
+      const savedRole = localStorage.getItem(ROLE_STORAGE_KEY) || 'Не выбрана';
+      applySelectedRole(savedRole);
+      
+      const savedMood = localStorage.getItem(MOOD_STORAGE_KEY) || 'Не выбрано';
+      currentMoodValue.textContent = savedMood;
+      
+      const savedActiveTab = localStorage.getItem(ACTIVE_TAB_STORAGE_KEY);
+      const defaultTab = 'chat';
+      const hasSavedTab = savedActiveTab && [...topMenuButtons].some(btn => btn.dataset.tab === savedActiveTab);
+      setActiveTab(hasSavedTab ? savedActiveTab : defaultTab);
+      
+      // Инициализация счетчиков
+      if (!localStorage.getItem(TOTAL_SESSIONS_KEY)) {
+        localStorage.setItem(TOTAL_SESSIONS_KEY, '1');
+      }
+      if (!localStorage.getItem(TOTAL_MESSAGES_KEY)) {
+        localStorage.setItem(TOTAL_MESSAGES_KEY, '0');
+      }
+      
+      await updateLastActivity();
+    }
+
+    init();
+  </script>
+</body>
+</html>
